@@ -1,7 +1,5 @@
 package service;
 
-import domain.Message;
-import domain.Status;
 import domain.User;
 import jms.StatusApplicationGateway;
 
@@ -21,5 +19,6 @@ public class StatusService implements ClientListener {
     @Override
     public void handleStatusReceived(User updatedUser) {
         System.out.println(updatedUser.getUsername() + " went: " + updatedUser.getStatus().getStatusName());
+        statusServer.sendStatusUpate(updatedUser);
     }
 }

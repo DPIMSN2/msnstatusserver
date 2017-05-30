@@ -19,7 +19,7 @@ public class StatusApplicationGateway implements JMSMessageReceiver{
 
     public StatusApplicationGateway(){
         MessageReceiverGateway.getInstance();
-
+        TopicSenderGateway.getInstance();
         this.listeners = new ArrayList<ClientListener>();
 
         startListening();
@@ -29,6 +29,11 @@ public class StatusApplicationGateway implements JMSMessageReceiver{
         if (!listeners.contains(clientListener)) {
             listeners.add(clientListener);
         }
+    }
+
+    public void sendStatusUpate(User user){
+        String message = userToJson(user);
+        TopicSenderGateway.publishMessage(message, user.getUsername());
     }
 
     private void startListening() {
@@ -50,8 +55,13 @@ public class StatusApplicationGateway implements JMSMessageReceiver{
     }
 
     private User jsonToUser(String json){
-        Gson jsonStatus = new GsonBuilder().create();
-        return jsonStatus.fromJson(json, User.class);
+        Gson jsonUser = new GsonBuilder().create();
+        return jsonUser.fromJson(json, User.class);
+    }
+
+    private String userToJson(User user){
+        Gson jsonUser = new GsonBuilder().create();
+        return jsonUser.toJson(user);
     }
 }
 
